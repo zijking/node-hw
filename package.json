@@ -1,0 +1,33 @@
+{
+  "name": "node-hw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "start:list": "node index.js --action='list'",
+    "start:get": "node index.js --action='get' --id=5",
+    "start:add": "node index.js --action='add' --name='Mango' --email='mango@gmail.com' --phone='322-22-22'",
+    "start:remove": "node index.js --action='remove' --id=3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zijking/node-hw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zijking/node-hw/issues"
+  },
+  "homepage": "https://github.com/zijking/node-hw#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "commander": "^7.1.0",
+    "yargs": "^16.2.0"
+  }
+}
