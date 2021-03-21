@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const validate = require('./validation');
+
 const contactsApi = require('../../model/contacts');
 
 router.get('/', async (req, res, next) => {
@@ -44,7 +46,7 @@ router.get('/:contactId', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', validate.createContact, async (req, res, next) => {
   try {
     const contact = await contactsApi.addContact(req.body);
     return res.status(201).json({
@@ -85,7 +87,7 @@ router.delete('/:contactId', async (req, res, next) => {
   }
 });
 
-router.patch('/:contactId', async (req, res, next) => {
+router.patch('/:contactId', validate.updateContact, async (req, res, next) => {
   try {
     const contact = await contactsApi.updateContact(
       req.params.contactId,
@@ -103,7 +105,7 @@ router.patch('/:contactId', async (req, res, next) => {
       return res.status(404).json({
         status: 'error',
         code: 404,
-        data: 'Not Found',
+        data: 'Not Found or missing fields',
       });
     }
   } catch (e) {

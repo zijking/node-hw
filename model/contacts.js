@@ -57,8 +57,11 @@ const addContact = async body => {
 
 const updateContact = async (contactId, body) => {
   const id = Number(contactId);
+  console.log('body: ', body);
 
-  // console.log('id: ', id);
+  if (Object.keys(body).length === 0) {
+    return null;
+  }
 
   const indexContact = el => el.id === id;
   const contactUp = fileDataObj.findIndex(indexContact);
