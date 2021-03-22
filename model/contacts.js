@@ -2,13 +2,31 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuid } = require('uuid');
 
+const db = require('./db');
+const { ObjectID } = require('mongodb');
+
+const getCollection = async (db, name) => {
+  const client = await db;
+  const collection = await client.db().collection(name);
+  return collection;
+};
+
+const COLLECTION_CONTACTS = 'contacts';
+
 const contactsPath = path.join(__dirname, './contacts.json');
 const fileContent = fs.readFileSync(contactsPath).toString();
 
 const fileDataObj = JSON.parse(fileContent);
 
+// const getContacts = async () => {
+//   return fileDataObj;
+// };
+
 const getContacts = async () => {
-  return fileDataObj;
+  const collection = await getCollection(db, COLLECTION_CONTACTS);
+  const results = await collection.find({}).toArray();
+  // console.log(results);
+  return results;
 };
 
 const getContactById = async contactId => {
