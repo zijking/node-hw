@@ -3,7 +3,7 @@ const router = express.Router();
 
 const validate = require('./validation');
 
-const contactsController = require('../../controllers/controllerContacts');
+const contactsController = require('../../../controllers/controllerContacts');
 
 router
   .get('/', contactsController.getContacts)
