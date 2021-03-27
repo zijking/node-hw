@@ -1,7 +1,11 @@
 const Contact = require('./schemas/contact');
 
-const getContacts = async () => {
-  const result = await Contact.find({});
+const getContacts = async userId => {
+  console.log('userid: ', userId);
+  const result = await Contact.find({ owner: userId }).populate({
+    path: 'owner',
+    select: 'email -_id',
+  });
   return result;
 };
 

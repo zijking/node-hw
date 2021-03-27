@@ -15,12 +15,13 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/contacts', contactsRouter);
+app.use('/api/auth', usersRouter);
 app.use('/api/users', usersRouter);
 
 app.use((req, res) => {
   res
     .status(HttpCode.NOT_FOUND)
-    .json({ message: `Not found ${HttpCode.NOT_FOUND}` });
+    .json({ message: `Not found ${HttpCode.NOT_FOUND} :(` });
 });
 
 app.use((err, req, res, next) => {
