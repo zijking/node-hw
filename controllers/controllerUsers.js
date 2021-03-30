@@ -112,7 +112,8 @@ const avatars = async (req, res, next) => {
     return res.json({
       status: 'success',
       code: HttpCode.OK,
-      data: {
+      ContentType: 'application/json',
+      ResponseBody: {
         avatarUrl,
       },
     });
