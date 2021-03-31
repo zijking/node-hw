@@ -4,7 +4,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const Jimp = require('jimp');
 const { HttpCode } = require('../helpers/constants');
+const EmailServices = require('../services/emails');
 const createFolderIsExist = require('../helpers/create-dir');
+const { v4: uuidv4 } = require('uuid');
 
 const User = require('../model/schemas/user');
 require('dotenv').config();
@@ -13,7 +15,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 const reg = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, name } = req.body;
     const user = await Users.findUserByEmail(email);
     if (user) {
       return res.status(HttpCode.CONFLICT).json({
@@ -24,7 +26,15 @@ const reg = async (req, res, next) => {
         message: 'Email is already use',
       });
     }
-    const newUser = await Users.createUser(req.body);
+    const verifyToken = uuidv4();
+    const emailService = new EmailServices(process.env.NODE_ENV);
+    await emailService.sendEmail(verifyToken, email, name);
+
+    const newUser = await Users.createUser({
+      ...req.body,
+      verify: false,
+      verificationToken: verifyToken,
+    });
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
@@ -146,4 +156,30 @@ const saveAvatarToStatic = async req => {
   return avatarUrl;
 };
 
-module.exports = { reg, login, logout, currentUser, avatars };
+const verify = async (req, res, next) => {
+  console.log('email verify DONE !');
+  console.log('req.params: ', req.params);
+  try {
+    const user = await Users.findByVerifyToken(req.params.verificationToken);
+    if (user) {
+      await Users.updateVerifyToken(user.id, true, null);
+      return res.json({
+        status: 'success',
+        code: HttpCode.OK,
+        ContentType: 'application/json',
+        message: 'Verification successful!',
+      });
+    }
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: 'error',
+      code: HttpCode.BAD_REQUEST,
+      ContentType: 'application/json',
+      ResponseBody: 'Bad request',
+      message: 'Link is not valid',
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { reg, login, logout, currentUser, avatars, verify };
