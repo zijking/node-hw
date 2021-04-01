@@ -37,6 +37,11 @@ const userSchema = new Schema({
       return gravatar.url(this.email, { s: '250' }, true);
     },
   },
+  verificationToken: { type: String, require: [true, 'Veryfi token require'] },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {

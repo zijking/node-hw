@@ -16,4 +16,6 @@ router.patch(
 
 router.get('/current', guard, userController.currentUser);
 
+router.get('/verify/:verificationToken', userController.verify);
+
 module.exports = router;
